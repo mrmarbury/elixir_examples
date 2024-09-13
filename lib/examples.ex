@@ -16,4 +16,8 @@ defmodule Examples do
   def start(_, _) do
     Examples.MySupervisor.start_link()
   end
+
+  def hello do
+    :world
+  end
 end
