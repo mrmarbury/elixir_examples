@@ -1,0 +1,98 @@
+{
+    "sourceFile": "docker-compose.yml",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 20,
+            "patches": [
+                {
+                    "date": 1726236886613,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1726236897388,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \n services:\n   elixir_app:\n     build: .\n-    container_name: elixir_app_container\n+    container_name: examples\n     volumes:\n       - .:/app\n     ports:\n       - \"4000:4000\"\n"
+                },
+                {
+                    "date": 1726237190231,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,13 +2,15 @@\n \n services:\n   elixir_app:\n     build: .\n-    container_name: examples\n+    container_name: elixir_app_container\n     volumes:\n       - .:/app\n     ports:\n-      - \"4000:4000\"\n+      - '4000:4000'\n+      - '4369:4369' # EPMD (Erlang Port Mapper Daemon)\n+      - '9001:9001' # Distributed node communication\n\\ No newline at end of file\n     environment:\n       MIX_ENV: dev\n     tty: true\n-    stdin_open: true\n+    stdin_open: true\n"
+                },
+                {
+                    "date": 1726237196442,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,10 +7,10 @@\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n-      - '4369:4369' # EPMD (Erlang Port Mapper Daemon)\n-      - '9001:9001' # Distributed node communication\n+      - '4369:4369'\n+      - '9001:9001'\n     environment:\n       MIX_ENV: dev\n\\ No newline at end of file\n     tty: true\n-    stdin_open: true\n+    stdin_open: true\n"
+                },
+                {
+                    "date": 1726237320860,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \n services:\n   elixir_app:\n     build: .\n-    container_name: elixir_app_container\n+    container_name: examples\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n@@ -12,5 +12,5 @@\n       - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n-    stdin_open: true\n\\ No newline at end of file\n+    stdin_open: true\n"
+                },
+                {
+                    "date": 1726237716070,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n \n services:\n   elixir_app:\n     build: .\n-    container_name: examples\n+    container_name: examples_container\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n"
+                },
+                {
+                    "date": 1726237825530,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n-      - '4369:4369'\n+      - '4369:43'\n       - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n"
+                },
+                {
+                    "date": 1726237831000,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n-      - '4369:43'\n+      - '4369:4369'\n       - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n"
+                },
+                {
+                    "date": 1726237909737,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n-      - '4369:4369'\n+      - '4370:4369'\n       - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n"
+                },
+                {
+                    "date": 1726239609914,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,10 +7,8 @@\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n-      - '4370:4369'\n-      - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n     stdin_open: true\n"
+                },
+                {
+                    "date": 1726239662286,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,8 +7,10 @@\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n+      - '43:4369'\n+      - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n     stdin_open: true\n"
+                },
+                {
+                    "date": 1726239668209,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,9 +7,9 @@\n     volumes:\n       - .:/app\n     ports:\n       - '4000:4000'\n-      - '43:4369'\n+      - '4368:4369'\n       - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n"
+                },
+                {
+                    "date": 1726239768779,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,12 +5,8 @@\n     build: .\n     container_name: examples_container\n     volumes:\n       - .:/app\n-    ports:\n-      - '4000:4000'\n-      - '4368:4369'\n-      - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n     stdin_open: true\n"
+                },
+                {
+                    "date": 1726240169364,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,7 +6,7 @@\n     container_name: examples_container\n     volumes:\n       - .:/app\n     environment:\n-      MIX_ENV: dev\n+      MIX_ENV: prod\n     tty: true\n     stdin_open: true\n"
+                },
+                {
+                    "date": 1726240209845,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,7 +6,7 @@\n     container_name: examples_container\n     volumes:\n       - .:/app\n     environment:\n-      MIX_ENV: prod\n+      MIX_ENV: proddocker-compose build --no-cache\n     tty: true\n     stdin_open: true\n"
+                },
+                {
+                    "date": 1726240215103,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,7 +6,7 @@\n     container_name: examples_container\n     volumes:\n       - .:/app\n     environment:\n-      MIX_ENV: proddocker-compose build --no-cache\n+      MIX_ENV: prod\n     tty: true\n     stdin_open: true\n"
+                },
+                {
+                    "date": 1726240335404,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,8 +5,12 @@\n     build: .\n     container_name: examples_container\n     volumes:\n       - .:/app\n+    ports:\n+      - '4000:4000'\n+      - '4368:4369'\n+      - '9001:9001'\n     environment:\n-      MIX_ENV: prod\n+      MIX_ENV: dev\n     tty: true\n     stdin_open: true\n"
+                },
+                {
+                    "date": 1726244466116,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,17 @@\n+version: '3.8'\n+\n+services:\n+  elixir_app:\n+    build: .\n+    container_name: examples_container\n+    volumes:\n+      - .:/app\n+    ports:\n+      - \n+      - '4000:4000'\n+      - '4368:4369'\n+      - '9001:9001'\n+    environment:\n+      MIX_ENV: dev\n+    tty: true\n+    stdin_open: true\n"
+                },
+                {
+                    "date": 1726244472031,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,28 +6,12 @@\n     container_name: examples_container\n     volumes:\n       - .:/app\n     ports:\n-      - \n+      - '2022:'\n       - '4000:4000'\n       - '4368:4369'\n       - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n     stdin_open: true\n-version: '3.8'\n-\n-services:\n-  elixir_app:\n-    build: .\n-    container_name: examples_container\n-    volumes:\n-      - .:/app\n-    ports:\n-      - '4000:4000'\n-      - '4368:4369'\n-      - '9001:9001'\n-    environment:\n-      MIX_ENV: dev\n-    tty: true\n-    stdin_open: true\n"
+                },
+                {
+                    "date": 1726244624150,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,11 +6,11 @@\n     container_name: examples_container\n     volumes:\n       - .:/app\n     ports:\n-      - '2022:'\n+      - '2022:22'\n       - '4000:4000'\n-      - '4368:4369'\n+      - '4369:4369'\n       - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n"
+                },
+                {
+                    "date": 1726245752339,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,11 +7,8 @@\n     volumes:\n       - .:/app\n     ports:\n       - '2022:22'\n-      - '4000:4000'\n-      - '4369:4369'\n-      - '9001:9001'\n     environment:\n       MIX_ENV: dev\n     tty: true\n     stdin_open: true\n"
+                }
+            ],
+            "date": 1726236886613,
+            "name": "Commit-0",
+            "content": "version: '3.8'\n\nservices:\n  elixir_app:\n    build: .\n    container_name: elixir_app_container\n    volumes:\n      - .:/app\n    ports:\n      - \"4000:4000\"\n    environment:\n      MIX_ENV: dev\n    tty: true\n    stdin_open: true"
+        }
+    ]
+}

@@ -1,0 +1,50 @@
+{
+    "sourceFile": "lib/examples.ex",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 8,
+            "patches": [
+                {
+                    "date": 1726236394137,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1726236455269,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,10 +11,8 @@\n       iex> Examples.hello()\n       :world\n \n   \"\"\"\n-  def hello do\n+  def start do\n     :world\n   end\n-\n-  hello\n end\n"
+                },
+                {
+                    "date": 1726236475966,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,9 @@\n defmodule Examples do\n   @moduledoc \"\"\"\n   Documentation for `Examples`.\n   \"\"\"\n+  require Logger\n \n   @doc \"\"\"\n   Hello world.\n \n@@ -12,7 +13,7 @@\n       :world\n \n   \"\"\"\n   def start do\n-    :world\n+    Logger.info:world\n   end\n end\n"
+                },
+                {
+                    "date": 1726236524145,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,8 +12,8 @@\n       iex> Examples.hello()\n       :world\n \n   \"\"\"\n-  def start do\n-    Logger.info:world\n+  def start() do\n+    Logger.info(:world)\n   end\n end\n"
+                },
+                {
+                    "date": 1726236535408,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,8 +12,9 @@\n       iex> Examples.hello()\n       :world\n \n   \"\"\"\n-  def start() do\n+  def start(_, _) do\n     Logger.info(:world)\n+    :ok\n   end\n end\n"
+                },
+                {
+                    "date": 1726236552716,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,7 +14,7 @@\n \n   \"\"\"\n   def start(_, _) do\n     Logger.info(:world)\n-    :ok\n+    \n   end\n end\n"
+                },
+                {
+                    "date": 1726237344625,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,7 +14,6 @@\n \n   \"\"\"\n   def start(_, _) do\n     Logger.info(:world)\n-    \n   end\n end\n"
+                },
+                {
+                    "date": 1726238645777,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,7 +13,7 @@\n       :world\n \n   \"\"\"\n   def start(_, _) do\n-    Logger.info(:world)\n+    \n   end\n end\n"
+                },
+                {
+                    "date": 1726238664359,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,7 +13,7 @@\n       :world\n \n   \"\"\"\n   def start(_, _) do\n-    \n+    Examples.MySupervisor.start_link()\n   end\n end\n"
+                }
+            ],
+            "date": 1726236394137,
+            "name": "Commit-0",
+            "content": "defmodule Examples do\n  @moduledoc \"\"\"\n  Documentation for `Examples`.\n  \"\"\"\n\n  @doc \"\"\"\n  Hello world.\n\n  ## Examples\n\n      iex> Examples.hello()\n      :world\n\n  \"\"\"\n  def hello do\n    :world\n  end\n\n  hello\nend\n"
+        }
+    ]
+}

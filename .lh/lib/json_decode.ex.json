@@ -1,0 +1,98 @@
+{
+    "sourceFile": "lib/json_decode.ex",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 20,
+            "patches": [
+                {
+                    "date": 1726230129503,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1726230135027,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,3 +1,4 @@\n defmodule JsonDecode do\n-  \n+\n+  def decode\n end\n"
+                },
+                {
+                    "date": 1726230140279,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,4 +1,6 @@\n defmodule JsonDecode do\n \n-  def decode\n+  def decode do\n+    \n+  end\n end\n"
+                },
+                {
+                    "date": 1726230282837,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,24 @@\n defmodule JsonDecode do\n \n-  def decode do\n-    \n+  def run do\n+    json = Jason.encode!(@sample_data)\n+\n+    IO.puts(\"Benchmarking Jason...\")\n+    :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n+    |> print_result(\"Jason\")\n+\n+    IO.puts(\"Benchmarking Poison...\")\n+    :timer.tc(fn -> run_benchmark(&Poison.decode!/1, json) end)\n+    |> print_result(\"Poison\")\n   end\n+\n+  defp run_benchmark(decode_fn, json) do\n+    for _ <- 1..1_000_000 do\n+      decode_fn.(json)\n+    end\n+  end\n+\n+  defp print_result({time, _}, library) do\n+    IO.puts(\"#{library} took #{time / 1_000_000} seconds\")\n+  end\n end\n"
+                },
+                {
+                    "date": 1726230290167,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,8 @@\n defmodule JsonDecode do\n \n   def run do\n+    \n     json = Jason.encode!(@sample_data)\n \n     IO.puts(\"Benchmarking Jason...\")\n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n"
+                },
+                {
+                    "date": 1726230297878,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n defmodule JsonDecode do\n \n   def run do\n-    \n+    json = File.read\n     json = Jason.encode!(@sample_data)\n \n     IO.puts(\"Benchmarking Jason...\")\n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n"
+                },
+                {
+                    "date": 1726230305984,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n defmodule JsonDecode do\n \n   def run do\n-    json = File.read\n+    json = File.read(\"..\")\n     json = Jason.encode!(@sample_data)\n \n     IO.puts(\"Benchmarking Jason...\")\n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n"
+                },
+                {
+                    "date": 1726230313763,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n defmodule JsonDecode do\n \n   def run do\n-    json = File.read(\"..\")\n+    json = File.read(\"../random\")\n     json = Jason.encode!(@sample_data)\n \n     IO.puts(\"Benchmarking Jason...\")\n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n"
+                },
+                {
+                    "date": 1726230320626,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,15 +1,17 @@\n defmodule JsonDecode do\n+  def run do\n+    json = File.read(\"../random_data.json\")\n \n-  def run do\n-    json = File.read(\"../random\")\n     json = Jason.encode!(@sample_data)\n \n     IO.puts(\"Benchmarking Jason...\")\n+\n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n     |> print_result(\"Jason\")\n \n     IO.puts(\"Benchmarking Poison...\")\n+\n     :timer.tc(fn -> run_benchmark(&Poison.decode!/1, json) end)\n     |> print_result(\"Poison\")\n   end\n \n"
+                },
+                {
+                    "date": 1726230331483,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n defmodule JsonDecode do\n   def run do\n-    json = File.read(\"../random_data.json\")\n+    random_json = File.read(\"../random_data.json\")\n \n     json = Jason.encode!(@sample_data)\n \n     IO.puts(\"Benchmarking Jason...\")\n"
+                },
+                {
+                    "date": 1726230338376,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n defmodule JsonDecode do\n   def run do\n     random_json = File.read(\"../random_data.json\")\n \n-    json = Jason.encode!(@sample_data)\n+    json = Jason.encode!(random_json)\n \n     IO.puts(\"Benchmarking Jason...\")\n \n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n"
+                },
+                {
+                    "date": 1726230343561,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,10 +3,8 @@\n     random_json = File.read(\"../random_data.json\")\n \n     json = Jason.encode!(random_json)\n \n-    IO.puts(\"Benchmarking Jason...\")\n-\n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n     |> print_result(\"Jason\")\n \n     IO.puts(\"Benchmarking Poison...\")\n"
+                },
+                {
+                    "date": 1726230354504,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,12 +6,8 @@\n \n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n     |> print_result(\"Jason\")\n \n-    IO.puts(\"Benchmarking Poison...\")\n-\n-    :timer.tc(fn -> run_benchmark(&Poison.decode!/1, json) end)\n-    |> print_result(\"Poison\")\n   end\n \n   defp run_benchmark(decode_fn, json) do\n     for _ <- 1..1_000_000 do\n"
+                },
+                {
+                    "date": 1726230367393,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n \n     json = Jason.encode!(random_json)\n \n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n-    |> print_result(\"Jason\")\n+    |> \n \n   end\n \n   defp run_benchmark(decode_fn, json) do\n"
+                },
+                {
+                    "date": 1726230372695,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,9 +4,9 @@\n \n     json = Jason.encode!(random_json)\n \n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n-    |> \n+    |> IO.puts(\"#{library} took #{time / 1_000_000} seconds\")\n \n   end\n \n   defp run_benchmark(decode_fn, json) do\n"
+                },
+                {
+                    "date": 1726230395320,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n defmodule JsonDecode do\n-  def run do\n+  def decode do\n     random_json = File.read(\"../random_data.json\")\n \n     json = Jason.encode!(random_json)\n \n"
+                },
+                {
+                    "date": 1726230407280,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,17 +5,13 @@\n     json = Jason.encode!(random_json)\n \n     :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n     |> IO.puts(\"#{library} took #{time / 1_000_000} seconds\")\n-\n   end\n \n   defp run_benchmark(decode_fn, json) do\n     for _ <- 1..1_000_000 do\n       decode_fn.(json)\n     end\n   end\n \n-  defp print_result({time, _}, library) do\n-    IO.puts(\"#{library} took #{time / 1_000_000} seconds\")\n-  end\n end\n"
+                },
+                {
+                    "date": 1726230414472,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,9 @@\n     random_json = File.read(\"../random_data.json\")\n \n     json = Jason.encode!(random_json)\n \n-    :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n+    {time, _}:timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n     |> IO.puts(\"#{library} took #{time / 1_000_000} seconds\")\n   end\n \n   defp run_benchmark(decode_fn, json) do\n"
+                },
+                {
+                    "date": 1726230422898,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,10 +3,10 @@\n     random_json = File.read(\"../random_data.json\")\n \n     json = Jason.encode!(random_json)\n \n-    {time, _}:timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n-    |> IO.puts(\"#{library} took #{time / 1_000_000} seconds\")\n+    {time, _} = :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n+    IO.puts(\"#{time / 1_000_000} seconds\")\n   end\n \n   defp run_benchmark(decode_fn, json) do\n     for _ <- 1..1_000_000 do\n"
+                },
+                {
+                    "date": 1726230429035,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,9 @@\n \n     json = Jason.encode!(random_json)\n \n     {time, _} = :timer.tc(fn -> run_benchmark(&Jason.decode!/1, json) end)\n+\n     IO.puts(\"#{time / 1_000_000}s\")\n   end\n \n   defp run_benchmark(decode_fn, json) do\n"
+                },
+                {
+                    "date": 1726230475218,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n defmodule JsonDecode do\n \n-  require \n+  require J\n   def decode do\n     random_json = File.read(\"../random_data.json\")\n \n     json = Jason.encode!(random_json)\n"
+                }
+            ],
+            "date": 1726230129503,
+            "name": "Commit-0",
+            "content": "defmodule JsonDecode do\n  \nend\n"
+        }
+    ]
+}

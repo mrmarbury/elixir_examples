@@ -1,0 +1,30 @@
+{
+    "sourceFile": ".vscode/settings.json",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1726231844471,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1726237974069,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,6 @@\n {\n   \"cSpell.words\": [\n-    \"eljiffy\"\n+    \"eljiffy\",\n+    \"sname\"\n   ]\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1726237980624,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,8 @@\n {\n   \"cSpell.words\": [\n     \"eljiffy\",\n+    \"epmd\",\n+    \"remsh\",\n     \"sname\"\n   ]\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1726256362124,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,9 @@\n {\n   \"cSpell.words\": [\n     \"eljiffy\",\n     \"epmd\",\n+    \"pids\",\n     \"remsh\",\n     \"sname\"\n   ]\n }\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1726231844471,
+            "name": "Commit-0",
+            "content": "{\n  \"cSpell.words\": [\n    \"eljiffy\"\n  ]\n}"
+        }
+    ]
+}

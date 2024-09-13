@@ -1,0 +1,466 @@
+{
+    "sourceFile": "lib/receive_loop.ex",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 112,
+            "patches": [
+                {
+                    "date": 1726253079883,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1726253085520,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,1 +1,3 @@\n-defm\n+defmodule Examples.ReceiveLoop do\n+\n+end\n"
+                },
+                {
+                    "date": 1726253143452,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,3 +1,3 @@\n defmodule Examples.ReceiveLoop do\n-\n+  \n end\n"
+                },
+                {
+                    "date": 1726253149288,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,3 +1,17 @@\n defmodule Examples.ReceiveLoop do\n-  \n+  @moduledoc \"\"\"\n+  for _ <- 1..10_000, do: spawn(&Examples.ReceiveLoop.loop/0)\n+  \"\"\"\n+\n+  def loop do\n+    receive do\n+      {:hello, sender} ->\n+        IO.puts(\"Hello from #{inspect(self)}\")\n+        send(sender, :world)\n+        loop()\n+\n+      {:stop} ->\n+        IO.puts(\"Stopping\")\n+    end\n+  end\n end\n"
+                },
+                {
+                    "date": 1726253164272,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n \n   def loop do\n     receive do\n       {:hello, sender} ->\n-        IO.puts(\"Hello from #{inspect(self)}\")\n+        IO.puts(\"Hello from #{inspect(self())}\")\n         send(sender, :world)\n         loop()\n \n       {:stop} ->\n"
+                },
+                {
+                    "date": 1726253282067,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,8 +8,9 @@\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(self())}\")\n         send(sender, :world)\n         loop()\n+      \n \n       {:stop} ->\n         IO.puts(\"Stopping\")\n     end\n"
+                },
+                {
+                    "date": 1726253290062,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -8,10 +8,14 @@\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(self())}\")\n         send(sender, :world)\n         loop()\n-      \n+      {:world, sender} ->\n+        IO.puts(\"Hello from #{inspect(self())}\")\n+        send(sender, :world)\n+        loop()\n \n+\n       {:stop} ->\n         IO.puts(\"Stopping\")\n     end\n   end\n"
+                },
+                {
+                    "date": 1726253298282,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n         IO.puts(\"Hello from #{inspect(self())}\")\n         send(sender, :world)\n         loop()\n       {:world, sender} ->\n-        IO.puts(\"Hello from #{inspect(self())}\")\n+        IO.puts(\"World from #{inspect(sendler)}\")\n         send(sender, :world)\n         loop()\n \n \n"
+                },
+                {
+                    "date": 1726253307454,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,13 +5,13 @@\n \n   def loop do\n     receive do\n       {:hello, sender} ->\n-        IO.puts(\"Hello from #{inspect(self())}\")\n+        IO.puts(\"Hello from #{inspect(sender)}\")\n         send(sender, :world)\n         loop()\n       {:world, sender} ->\n-        IO.puts(\"World from #{inspect(sendler)}\")\n+        IO.puts(\"World from #{inspect(sender)}\")\n         send(sender, :world)\n         loop()\n \n \n"
+                },
+                {
+                    "date": 1726253330434,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,16 +6,16 @@\n   def loop do\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n-        send(sender, :world)\n+        send(sender, {}:world)\n         loop()\n+\n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n         send(sender, :world)\n         loop()\n \n-\n       {:stop} ->\n         IO.puts(\"Stopping\")\n     end\n   end\n"
+                },
+                {
+                    "date": 1726253335539,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n   def loop do\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n-        send(sender, {}:world)\n+        send(sender, {:world, sel)\n         loop()\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726253344865,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,14 +6,14 @@\n   def loop do\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n-        send(sender, {:world, sel)\n+        send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n-        send(sender, :world)\n+        send(sender, {})\n         loop()\n \n       {:stop} ->\n         IO.puts(\"Stopping\")\n"
+                },
+                {
+                    "date": 1726253360984,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,14 +6,15 @@\n   def loop do\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n+        \n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n-        send(sender, {})\n+        send(sender, {:hello, self()})\n         loop()\n \n       {:stop} ->\n         IO.puts(\"Stopping\")\n"
+                },
+                {
+                    "date": 1726253371612,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,8 @@\n   def loop do\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n-        \n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n"
+                },
+                {
+                    "date": 1726253377268,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,9 @@\n   for _ <- 1..10_000, do: spawn(&Examples.ReceiveLoop.loop/0)\n   \"\"\"\n \n   def loop do\n+    Process.sleep\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         send(sender, {:world, self()})\n"
+                },
+                {
+                    "date": 1726254001278,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,10 @@\n   for _ <- 1..10_000, do: spawn(&Examples.ReceiveLoop.loop/0)\n   \"\"\"\n \n   def loop do\n-    Process.sleep\n+    Process.sleep(1_000)\n+\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         send(sender, {:world, self()})\n@@ -15,9 +16,9 @@\n         IO.puts(\"World from #{inspect(sender)}\")\n         send(sender, {:hello, self()})\n         loop()\n \n-      {:stop} ->\n+      {:stop ->\n         IO.puts(\"Stopping\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726254070878,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n-  for _ <- 1..10_000, do: spawn(&Examples.ReceiveLoop.loop/0)\n+  \n   \"\"\"\n \n   def loop do\n     Process.sleep(1_000)\n@@ -16,9 +16,9 @@\n         IO.puts(\"World from #{inspect(sender)}\")\n         send(sender, {:hello, self()})\n         loop()\n \n-      {:stop ->\n+      :stop ->\n         IO.puts(\"Stopping\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726254077755,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,7 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n+  pida = spawn(&Examples.ReceiveLoop.loop/0)\n   \n   \"\"\"\n \n   def loop do\n"
+                },
+                {
+                    "date": 1726254083601,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n   pida = spawn(&Examples.ReceiveLoop.loop/0)\n-  \n+  pidb = spawn(&Examples.ReceiveLoop.loop/0)\n   \"\"\"\n \n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254089615,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,9 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n   pida = spawn(&Examples.ReceiveLoop.loop/0)\n   pidb = spawn(&Examples.ReceiveLoop.loop/0)\n+  \n   \"\"\"\n \n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254096443,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n-  pida = spawn(&Examples.ReceiveLoop.loop/0)\n+  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n   pidb = spawn(&Examples.ReceiveLoop.loop/0)\n-  \n+  send(pida, {:hello, pidb})\n   \"\"\"\n \n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254102598,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n   pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n-  pidb = spawn(&Examples.ReceiveLoop.loop/0)\n-  send(pida, {:hello, pidb})\n+  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n+  send(pid1, {:hello, pid2})\n   \"\"\"\n \n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254255960,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -4,8 +4,17 @@\n   pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n   send(pid1, {:hello, pid2})\n   \"\"\"\n \n+  @doc ~S\"\"\"\n+  Parses the given `line` into a command.\n+\n+  ## Examples\n+\n+      iex> KVServer.Command.parse(\"CREATE shopping\\r\\n\")\n+      {:ok, {:create, \"shopping\"}}\n+\n+  \"\"\"\n   def loop do\n     Process.sleep(1_000)\n \n     receive do\n"
+                },
+                {
+                    "date": 1726254263230,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n   send(pid1, {:hello, pid2})\n   \"\"\"\n \n   @doc ~S\"\"\"\n-  Parses the given `line` into a command.\n+  Hello world \n \n   ## Examples\n \n       iex> KVServer.Command.parse(\"CREATE shopping\\r\\n\")\n"
+                },
+                {
+                    "date": 1726254268908,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n   send(pid1, {:hello, pid2})\n   \"\"\"\n \n   @doc ~S\"\"\"\n-  Hello world \n+  Hello world\n \n   ## Examples\n \n       iex> KVServer.Command.parse(\"CREATE shopping\\r\\n\")\n"
+                },
+                {
+                    "date": 1726254282167,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,14 +5,13 @@\n   send(pid1, {:hello, pid2})\n   \"\"\"\n \n   @doc ~S\"\"\"\n-  Hello world\n+  Hello world loop\n \n   ## Examples\n \n-      iex> KVServer.Command.parse(\"CREATE shopping\\r\\n\")\n-      {:ok, {:create, \"shopping\"}}\n+      iex> \n \n   \"\"\"\n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254289140,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,10 @@\n   Hello world loop\n \n   ## Examples\n \n-      iex> \n+      iex> pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n+      iex>\n \n   \"\"\"\n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254297242,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,10 @@\n \n   ## Examples\n \n       iex> pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n-      iex>\n+      iex> pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n+      iex\n \n   \"\"\"\n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254303260,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,7 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n-  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n-  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n-  send(pid1, {:hello, pid2})\n+  \n   \"\"\"\n \n   @doc ~S\"\"\"\n   Hello world loop\n"
+                },
+                {
+                    "date": 1726254310316,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n defmodule Examples.ReceiveLoop do\n   @moduledoc \"\"\"\n-  \n+  Example for a Receive Loop\n   \"\"\"\n \n   @doc ~S\"\"\"\n   Hello world loop\n"
+                },
+                {
+                    "date": 1726254362708,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,9 +9,9 @@\n   ## Examples\n \n       iex> pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n       iex> pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n-      iex\n+      iex> send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254475714,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n   @moduledoc \"\"\"\n   Example for a Receive Loop\n   \"\"\"\n \n-  @doc ~S\"\"\"\n+  @doc \"\"\"\n   Hello world loop\n \n   ## Examples\n \n"
+                },
+                {
+                    "date": 1726254481597,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,11 +5,9 @@\n \n   @doc \"\"\"\n   Hello world loop\n \n-  ## Examples\n-\n-      iex> pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n+ pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n       iex> pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n       iex> send(pid1, {:hello, pid2})\n \n   \"\"\"\n"
+                },
+                {
+                    "date": 1726254488069,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,11 +5,11 @@\n \n   @doc \"\"\"\n   Hello world loop\n \n- pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n-      iex> pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n-      iex> send(pid1, {:hello, pid2})\n+  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n+  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n+  send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n     Process.sleep(1_000)\n"
+                },
+                {
+                    "date": 1726254494397,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,9 @@\n   Example for a Receive Loop\n   \"\"\"\n \n   @doc \"\"\"\n-  Hello world loop\n+  Hello world loop to demonstrate \n \n   pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n   pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n   send(pid1, {:hello, pid2})\n"
+                },
+                {
+                    "date": 1726254708418,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,17 +3,17 @@\n   Example for a Receive Loop\n   \"\"\"\n \n   @doc \"\"\"\n-  Hello world loop to demonstrate \n+  Hello world loop to demonstrate message passing between processes.\n \n   pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n   pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    Process.sleep(1_000)\n+    (rand.uniform(2000) + 1000) |> Process.sleep(1_000)\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726254760589,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    (rand.uniform(2000) + 1000) |> Process.sleep(1_000)\n+    (:rand.uniform(2000) + 1000) |> Process.sleep()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726254878624,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    (:rand.uniform(2000) + 1000) |> Process.sleep()\n+    (:rand.uniform(2000)) |> Process.sleep()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726254908659,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    (:rand.uniform(2000)) |> Process.sleep()\n+    :rand.uniform(5_000) |> Process.sleep()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726254919014,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    :rand.uniform(5_000) |> Process.sleep()\n+    (:rand.uniform(5_000) + 1_000) |> Process.sleep()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726254927528,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n     (:rand.uniform(5_000) + 1_000) |> Process.sleep()\n \n     receive do\n       {:hello, sender} ->\n-        IO.puts(\"Hello from #{inspect(sender)}\")\n+        IO.puts(\"Hello from #{inspect(sender)}\\n\")\n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n"
+                },
+                {
+                    "date": 1726254967990,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,18 +11,18 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    (:rand.uniform(5_000) + 1_000) |> Process.sleep()\n+    (:rand.uniform(3_000) + 1_000) |> Process.sleep()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\\n\")\n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n-        IO.puts(\"World from #{inspect(sender)}\")\n+        IO.puts(\"World from #{inspect(sender)}\\n\")\n         send(sender, {:hello, self()})\n         loop()\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726255007828,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    (:rand.uniform(3_000) + 1_000) |> Process.sleep()\n+    Process.sleep()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\\n\")\n"
+                },
+                {
+                    "date": 1726255012980,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n   def loop do\n-    Process.sleep()\n+    Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\\n\")\n"
+                },
+                {
+                    "date": 1726255038358,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,8 +10,10 @@\n   pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n+\n+  @\n   def loop do\n     Process.sleep(2_000)\n \n     receive do\n"
+                },
+                {
+                    "date": 1726255047093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n-  @\n+  @counter 0\n   def loop do\n     Process.sleep(2_000)\n \n     receive do\n"
+                },
+                {
+                    "date": 1726255067736,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,8 +13,9 @@\n   \"\"\"\n \n   @counter 0\n   def loop do\n+    @counter = @counter + 1\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726255074174,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,9 +18,9 @@\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n-        IO.puts(\"Hello from #{inspect(sender)}\\n\")\n+        IO.puts(\"#{Hello from #{inspect(sender)}\\n\")\n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n"
+                },
+                {
+                    "date": 1726255089605,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,14 +18,14 @@\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n-        IO.puts(\"#{Hello from #{inspect(sender)}\\n\")\n+        IO.puts(\"#{@counter} Hello from #{inspect(sender)}\\n\")\n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n-        IO.puts(\"World from #{inspect(sender)}\\n\")\n+        IO.puts(\"#World from #{inspect(sender)}\\n\")\n         send(sender, {:hello, self()})\n         loop()\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726255128285,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,8 +12,9 @@\n \n   \"\"\"\n \n   @counter 0\n+  \n   def loop do\n     @counter = @counter + 1\n     Process.sleep(2_000)\n \n@@ -23,9 +24,9 @@\n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n-        IO.puts(\"#World from #{inspect(sender)}\\n\")\n+        IO.puts(\"#{@counter} World from #{inspect(sender)}\\n\")\n         send(sender, {:hello, self()})\n         loop()\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726255364605,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,11 +12,10 @@\n \n   \"\"\"\n \n   @counter 0\n-  \n+\n   def loop do\n-    @counter = @counter + 1\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726255371675,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,11 +13,11 @@\n   \"\"\"\n \n   @counter 0\n \n-  def loop do\n+  def loop(counter) do\n     Process.sleep(2_000)\n-\n+    \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\\n\")\n         send(sender, {:world, self()})\n"
+                },
+                {
+                    "date": 1726255377747,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,10 @@\n   @counter 0\n \n   def loop(counter) do\n     Process.sleep(2_000)\n-    \n+    new_counter = counter + 1\n+\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\\n\")\n         send(sender, {:world, self()})\n"
+                },
+                {
+                    "date": 1726255384487,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,14 +21,14 @@\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\\n\")\n         send(sender, {:world, self()})\n-        loop()\n+        loop(new_counter)\n \n       {:world, sender} ->\n         IO.puts(\"#{@counter} World from #{inspect(sender)}\\n\")\n         send(sender, {:hello, self()})\n-        loop()\n+        loop(new_counter)\n \n       :stop ->\n         IO.puts(\"Stopping\")\n     end\n"
+                },
+                {
+                    "date": 1726255408333,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,18 +5,20 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n-  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n-  send(pid1, {:hello, pid2})\n+  pid1 = spawn(Examples.ReceiveLoop, :loop, [initial_counter])\n+    pid2 = spawn(Examples.ReceiveLoop, :loop, [initial_counter])\n \n+    send(pid1, {:hello, pid2})\n+\n   \"\"\"\n \n   @counter 0\n \n   def loop(counter) do\n     Process.sleep(2_000)\n+\n     new_counter = counter + 1\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726255430927,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,12 +5,12 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pid1 = spawn(Examples.ReceiveLoop, :loop, [initial_counter])\n-    pid2 = spawn(Examples.ReceiveLoop, :loop, [initial_counter])\n+  pid1 = spawn(Examples.ReceiveLoop, :loop, [0])\n+  pid2 = spawn(Examples.ReceiveLoop, :loop, [initial_counter])\n \n-    send(pid1, {:hello, pid2})\n+  send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n   @counter 0\n"
+                },
+                {
+                    "date": 1726255592584,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n   pid1 = spawn(Examples.ReceiveLoop, :loop, [0])\n-  pid2 = spawn(Examples.ReceiveLoop, :loop, [initial_counter])\n+  pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n \n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n@@ -16,9 +16,8 @@\n   @counter 0\n \n   def loop(counter) do\n     Process.sleep(2_000)\n-\n     new_counter = counter + 1\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726255608520,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,8 +30,8 @@\n         send(sender, {:hello, self()})\n         loop(new_counter)\n \n       :stop ->\n-        IO.puts(\"Stopping\")\n+        IO.puts(\"Stopping #\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255614364,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,9 @@\n     new_counter = counter + 1\n \n     receive do\n       {:hello, sender} ->\n-        IO.puts(\"#{@counter} Hello from #{inspect(sender)}\\n\")\n+        IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n         send(sender, {:world, self()})\n         loop(new_counter)\n \n       {:world, sender} ->\n@@ -30,8 +30,8 @@\n         send(sender, {:hello, self()})\n         loop(new_counter)\n \n       :stop ->\n-        IO.puts(\"Stopping #\")\n+        IO.puts(\"Stopping #{inspect(self())}\\n\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255680694,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,13 +25,14 @@\n         send(sender, {:world, self()})\n         loop(new_counter)\n \n       {:world, sender} ->\n-        IO.puts(\"#{@counter} World from #{inspect(sender)}\\n\")\n+        IO.puts(\"#{@counter} World from #{inspect(sender)}\")\n         send(sender, {:hello, self()})\n         loop(new_counter)\n \n       :stop ->\n-        IO.puts(\"Stopping #{inspect(self())}\\n\")\n+        IO.puts(\"Stopping #{inspect(self())}\")\n+        \n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255687783,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,8 +31,8 @@\n         loop(new_counter)\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n-        \n+      {:DOWN, }\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255698212,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,8 +31,8 @@\n         loop(new_counter)\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n-      {:DOWN, }\n+      {:DOWN, _}\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255705356,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,8 +31,9 @@\n         loop(new_counter)\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n-      {:DOWN, _}\n+      {:DOWN, _, :process, pid} ->\n+        IO.puts(\"Process died\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255713987,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,9 +31,9 @@\n         loop(new_counter)\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n-      {:DOWN, _, :process, pid} ->\n+      {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process died\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255723258,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -32,8 +32,8 @@\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n       {:DOWN, _, :process, pid, reason} ->\n-        IO.puts(\"Process died\")\n+        IO.puts(\"Process #{}died\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255730728,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -32,8 +32,9 @@\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n       {:DOWN, _, :process, pid, reason} ->\n-        IO.puts(\"Process #{}died\")\n+        IO.puts(\"Process #{pid} died with reason #{inspect(reason)}\")\n+        loop(new_counter)\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255746961,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -31,10 +31,10 @@\n         loop(new_counter)\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n+\n       {:DOWN, _, :process, pid, reason} ->\n-        IO.puts(\"Process #{pid} died with reason #{inspect(reason)}\")\n-        loop(new_counter)\n+        IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255764245,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,9 +22,9 @@\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n         send(sender, {:world, self()})\n-        loop(new_counter)\n+        loop()\n \n       {:world, sender} ->\n         IO.puts(\"#{@counter} World from #{inspect(sender)}\")\n         send(sender, {:hello, self()})\n@@ -33,8 +33,8 @@\n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n-        IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping\")\n+        IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255770855,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,9 +16,8 @@\n   @counter 0\n \n   def loop(counter) do\n     Process.sleep(2_000)\n-    new_counter = counter + 1\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n@@ -27,9 +26,9 @@\n \n       {:world, sender} ->\n         IO.puts(\"#{@counter} World from #{inspect(sender)}\")\n         send(sender, {:hello, self()})\n-        loop(new_counter)\n+        loop()\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n"
+                },
+                {
+                    "date": 1726255787868,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   \"\"\"\n \n   @counter 0\n \n-  def loop(counter) do\n+  def loop() do\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726255794086,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -33,7 +33,8 @@\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n+      \n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255799680,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -33,8 +33,8 @@\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n-      \n+      any -> \n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255806551,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -33,8 +33,9 @@\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n-      any -> \n+      any ->\n+        IO.puts(\"Received unknown message: #{inspect(any)}\")\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255812598,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -34,8 +34,9 @@\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n       any ->\n-        IO.puts(\"Received unknown message: #{inspect(any)}\")\n+        IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n+        loop()\n     end\n   end\n end\n"
+                },
+                {
+                    "date": 1726255825683,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pid1 = spawn(Examples.ReceiveLoop, :loop, [0])\n+  pida = spawn(&Examples.ReceiveLoop.loop/0)\n   pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n \n   send(pid1, {:hello, pid2})\n \n@@ -33,8 +33,9 @@\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n+\n       any ->\n         IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n"
+                },
+                {
+                    "date": 1726255834219,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,10 +5,10 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pida = spawn(&Examples.ReceiveLoop.loop/0)\n-  pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n+  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n+  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n \n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n"
+                },
+                {
+                    "date": 1726255842520,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,9 @@\n   \"\"\"\n \n   @counter 0\n \n-  def loop() do\n+  defp loop() do\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726255847898,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,8 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n-  @counter 0\n \n   defp loop() do\n     Process.sleep(2_000)\n \n"
+                },
+                {
+                    "date": 1726255855159,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n+  pid1 = spawn(&Examples.ReceiveLoop.start_loop/0)\n   pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n \n   send(pid1, {:hello, pid2})\n \n"
+                },
+                {
+                    "date": 1726255862104,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,17 +5,18 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pid1 = spawn(&Examples.ReceiveLoop.start_loop/0)\n-  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n+  pida = spawn(&Examples.ReceiveLoop.loop/0)\n+  pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n \n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n+  @counter 0\n \n-  defp loop() do\n+  def loop() do\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726255871200,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,10 +5,10 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pida = spawn(&Examples.ReceiveLoop.loop/0)\n-  pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n+  pid1 = spawn(Examples.ReceiveLoop, :start_loop, [0])\n+  pid2 = spawn(Examples.ReceiveLoop, :start_loop, [0])\n \n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n"
+                },
+                {
+                    "date": 1726255893299,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,10 +5,10 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pid1 = spawn(Examples.ReceiveLoop, :start_loop, [0])\n-  pid2 = spawn(Examples.ReceiveLoop, :start_loop, [0])\n+  pid1 = spawn(Examples.ReceiveLoop, :loop, [0])\n+  pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n \n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n@@ -33,9 +33,8 @@\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n-\n       any ->\n         IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n"
+                },
+                {
+                    "date": 1726255904726,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,9 +5,9 @@\n \n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n-  pid1 = spawn(Examples.ReceiveLoop, :loop, [0])\n+  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n   pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n \n   send(pid1, {:hello, pid2})\n \n"
+                },
+                {
+                    "date": 1726255943276,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n   @doc \"\"\"\n   Hello world loop to demonstrate message passing between processes.\n \n   pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n-  pid2 = spawn(Examples.ReceiveLoop, :loop, [0])\n+  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n \n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n@@ -16,8 +16,9 @@\n   @counter 0\n \n   def loop() do\n     Process.sleep(2_000)\n+    Process.mo\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n@@ -33,8 +34,9 @@\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n+\n       any ->\n         IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n"
+                },
+                {
+                    "date": 1726255950997,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,9 +16,9 @@\n   @counter 0\n \n   def loop() do\n     Process.sleep(2_000)\n-    Process.mo\n+    Process.monitor()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726255967004,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,9 +16,8 @@\n   @counter 0\n \n   def loop() do\n     Process.sleep(2_000)\n-    Process.monitor()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726255992195,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n-  @counter 0\n+  @\n \n   def loop() do\n     Process.sleep(2_000)\n \n"
+                },
+                {
+                    "date": 1726256155036,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,8 +25,9 @@\n         loop()\n \n       {:world, sender} ->\n         IO.puts(\"#{@counter} World from #{inspect(sender)}\")\n+        Process\n         send(sender, {:hello, self()})\n         loop()\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726256160293,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,9 +25,9 @@\n         loop()\n \n       {:world, sender} ->\n         IO.puts(\"#{@counter} World from #{inspect(sender)}\")\n-        Process\n+        Process.mon\n         send(sender, {:hello, self()})\n         loop()\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726256169088,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,22 +12,21 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n-  @\n-\n-  def loop() do\n+  @def loop() do\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n+        Process.monitor(sender)\n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n         IO.puts(\"#{@counter} World from #{inspect(sender)}\")\n-        Process.mon\n+        Process.monitor(sender)\n         send(sender, {:hello, self()})\n         loop()\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726256183577,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n-  @def loop() do\n+  def loop() do\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n"
+                },
+                {
+                    "date": 1726256192090,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,9 +17,9 @@\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n-        IO.puts(\"#{@counter} Hello from #{inspect(sender)}\")\n+        IO.puts(\"Hello from #{inspect(sender)}\")\n         Process.monitor(sender)\n         send(sender, {:world, self()})\n         loop()\n \n"
+                },
+                {
+                    "date": 1726256312438,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,9 +12,9 @@\n   send(pid1, {:hello, pid2})\n \n   \"\"\"\n \n-  def loop() do\n+  def loop(monitored_pids \\\\ MapSet.new()) do\n     Process.sleep(2_000)\n \n     receive do\n       {:hello, sender} ->\n@@ -23,9 +23,9 @@\n         send(sender, {:world, self()})\n         loop()\n \n       {:world, sender} ->\n-        IO.puts(\"#{@counter} World from #{inspect(sender)}\")\n+        IO.puts(\"World from #{inspect(sender)}\")\n         Process.monitor(sender)\n         send(sender, {:hello, self()})\n         loop()\n \n"
+                },
+                {
+                    "date": 1726256323752,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -39,5 +39,14 @@\n         IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n+\n+  defp maybe_monitor(pid, monitored_pids) do\n+    if MapSet.member?(monitored_pids, pid) do\n+      monitored_pids\n+    else\n+      Process.monitor(pid)\n+      MapSet.put(monitored_pids, pid)\n+    end\n+  end\n end\n"
+                },
+                {
+                    "date": 1726256343765,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,8 +18,9 @@\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n+        new_monitored_pids = maybe_monitor(sender, monitored_pids)\n         Process.monitor(sender)\n         send(sender, {:world, self()})\n         loop()\n \n"
+                },
+                {
+                    "date": 1726256354967,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,11 +25,12 @@\n         loop()\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n+        new_monitored_pids = maybe_monitor(sender, monitored_pids)\n         Process.monitor(sender)\n         send(sender, {:hello, self()})\n-        loop()\n+        loop(new_monitored_pids)\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n"
+                },
+                {
+                    "date": 1726256362934,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,9 +21,9 @@\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n         Process.monitor(sender)\n         send(sender, {:world, self()})\n-        loop()\n+        loop(new_monitored_pids)\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n"
+                },
+                {
+                    "date": 1726256453223,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,9 +26,8 @@\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n-        Process.monitor(sender)\n         send(sender, {:hello, self()})\n         loop(new_monitored_pids)\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726256458992,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,52 @@\n+defmodule Examples.ReceiveLoop do\n+  @moduledoc \"\"\"\n+  Example for a Receive Loop\n+  \"\"\"\n+\n+  @doc \"\"\"\n+  Hello world loop to demonstrate message passing between processes.\n+\n+  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n+  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n+\n+  send(pid1, {:hello, pid2})\n+\n+  \"\"\"\n+\n+  def loop(monitored_pids \\\\ MapSet.new()) do\n+    Process.sleep(2_000)\n+\n+    receive do\n+      {:hello, sender} ->\n+        IO.puts(\"Hello from #{inspect(sender)}\")\n+        new_monitored_pids = maybe_monitor(sender, monitored_pids)\n+        send(sender, {:world, self()})\n+        loop(new_monitored_pids)\n+\n+      {:world, sender} ->\n+        IO.puts(\"World from #{inspect(sender)}\")\n+        new_monitored_pids = maybe_monitor(sender, monitored_pids)\n+        send(sender, {:hello, self()})\n+        loop(new_monitored_pids)\n+\n+      :stop ->\n+        IO.puts(\"Stopping #{inspect(self())}\")\n+\n+      {:DOWN, _, :process, pid, reason} ->\n+        IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n+\n+      any ->\n+        IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n+        loop()\n+    end\n+  end\n+\n+  defp maybe_monitor(pid, monitored_pids) do\n+    if MapSet.member?(monitored_pids, pid) do\n+      monitored_pids\n+    else\n+      Process.monitor(pid)\n+      MapSet.put(monitored_pids, pid)\n+    end\n+  end\n+end\n"
+                },
+                {
+                    "date": 1726256779362,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n-        send(sender, {:world, self()})\n+        if Process.send(sender, {:world, self()})\n         loop(new_monitored_pids)\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n@@ -49,57 +49,4 @@\n       MapSet.put(monitored_pids, pid)\n     end\n   end\n end\n-defmodule Examples.ReceiveLoop do\n-  @moduledoc \"\"\"\n-  Example for a Receive Loop\n-  \"\"\"\n-\n-  @doc \"\"\"\n-  Hello world loop to demonstrate message passing between processes.\n-\n-  pid1 = spawn(&Examples.ReceiveLoop.loop/0)\n-  pid2 = spawn(&Examples.ReceiveLoop.loop/0)\n-\n-  send(pid1, {:hello, pid2})\n-\n-  \"\"\"\n-\n-  def loop(monitored_pids \\\\ MapSet.new()) do\n-    Process.sleep(2_000)\n-\n-    receive do\n-      {:hello, sender} ->\n-        IO.puts(\"Hello from #{inspect(sender)}\")\n-        new_monitored_pids = maybe_monitor(sender, monitored_pids)\n-        Process.monitor(sender)\n-        send(sender, {:world, self()})\n-        loop(new_monitored_pids)\n-\n-      {:world, sender} ->\n-        IO.puts(\"World from #{inspect(sender)}\")\n-        new_monitored_pids = maybe_monitor(sender, monitored_pids)\n-        send(sender, {:hello, self()})\n-        loop(new_monitored_pids)\n-\n-      :stop ->\n-        IO.puts(\"Stopping #{inspect(self())}\")\n-\n-      {:DOWN, _, :process, pid, reason} ->\n-        IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n-\n-      any ->\n-        IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n-        loop()\n-    end\n-  end\n-\n-  defp maybe_monitor(pid, monitored_pids) do\n-    if MapSet.member?(monitored_pids, pid) do\n-      monitored_pids\n-    else\n-      Process.monitor(pid)\n-      MapSet.put(monitored_pids, pid)\n-    end\n-  end\n-end\n"
+                },
+                {
+                    "date": 1726256784744,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n-        if Process.send(sender, {:world, self()})\n+        if Process.alive?(sender)send(sender, {:world, self()})\n         loop(new_monitored_pids)\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726256790323,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,10 @@\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n-        if Process.alive?(sender)send(sender, {:world, self()})\n+        if Process.alive?(sender) do\n+          send(sender, {:world, self()})\n         loop(new_monitored_pids)\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726256804132,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,15 +19,19 @@\n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n+\n         if Process.alive?(sender) do\n           send(sender, {:world, self()})\n+        end\n+\n         loop(new_monitored_pids)\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n+        if Process.alive?(sender) do\n         send(sender, {:hello, self()})\n         loop(new_monitored_pids)\n \n       :stop ->\n"
+                },
+                {
+                    "date": 1726256864161,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,10 +29,13 @@\n \n       {:world, sender} ->\n         IO.puts(\"World from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n+\n         if Process.alive?(sender) do\n-        send(sender, {:hello, self()})\n+          send(sender, {:hello, self()})\n+        end\n+\n         loop(new_monitored_pids)\n \n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n@@ -40,9 +43,9 @@\n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n \n       any ->\n-        IO.puts(\"Received unknown message: #{inspect(any)}, ignoring\")\n+        IO.puts(\"#{selReceived unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n \n"
+                },
+                {
+                    "date": 1726256873400,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,9 +43,9 @@\n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n \n       any ->\n-        IO.puts(\"#{selReceived unknown message: #{inspect(any)}, ignoring\")\n+        IO.puts(\"#{self()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n \n"
+                },
+                {
+                    "date": 1726256882523,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,9 +43,9 @@\n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n \n       any ->\n-        IO.puts(\"#{self()} Received unknown message: #{inspect(any)}, ignoring\")\n+        IO.puts(\"#{IO.self()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n \n"
+                },
+                {
+                    "date": 1726256888031,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,9 +43,9 @@\n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n \n       any ->\n-        IO.puts(\"#{IO.self()} Received unknown message: #{inspect(any)}, ignoring\")\n+        IO.puts(\"#{inspect(self()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n \n"
+                },
+                {
+                    "date": 1726256896093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,9 +43,9 @@\n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n \n       any ->\n-        IO.puts(\"#{inspect(self()} Received unknown message: #{inspect(any)}, ignoring\")\n+        IO.puts(\"#{self() |> inspect()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n \n"
+                },
+                {
+                    "date": 1726256951040,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,9 +40,9 @@\n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n-        IO.puts(\"Process #{pid} died with reason #{inspect(reason)} ... Stopping as well\")\n+        IO.puts(\"Process #{IO.pid} died with reason #{inspect(reason)} ... Stopping as well\")\n \n       any ->\n         IO.puts(\"#{self() |> inspect()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n"
+                },
+                {
+                    "date": 1726256958284,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,9 +40,11 @@\n       :stop ->\n         IO.puts(\"Stopping #{inspect(self())}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n-        IO.puts(\"Process #{IO.pid} died with reason #{inspect(reason)} ... Stopping as well\")\n+        IO.puts(\n+          \"Process #{inspect(pid)} died with reason #{inspect(reason)} ... Stopping as well\"\n+        )\n \n       any ->\n         IO.puts(\"#{self() |> inspect()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n"
+                },
+                {
+                    "date": 1726256968739,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,9 @@\n   \"\"\"\n \n   def loop(monitored_pids \\\\ MapSet.new()) do\n     Process.sleep(2_000)\n+    \n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n"
+                },
+                {
+                    "date": 1726256991845,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,17 +14,17 @@\n   \"\"\"\n \n   def loop(monitored_pids \\\\ MapSet.new()) do\n     Process.sleep(2_000)\n-    \n+    me = self()\n \n     receive do\n       {:hello, sender} ->\n         IO.puts(\"Hello from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n \n         if Process.alive?(sender) do\n-          send(sender, {:world, self()})\n+          send(sender, {:world, me})\n         end\n \n         loop(new_monitored_pids)\n \n@@ -32,23 +32,23 @@\n         IO.puts(\"World from #{inspect(sender)}\")\n         new_monitored_pids = maybe_monitor(sender, monitored_pids)\n \n         if Process.alive?(sender) do\n-          send(sender, {:hello, self()})\n+          send(sender, {:hello, me})\n         end\n \n         loop(new_monitored_pids)\n \n       :stop ->\n-        IO.puts(\"Stopping #{inspect(self())}\")\n+        IO.puts(\"Stopping #{inspect(me)}\")\n \n       {:DOWN, _, :process, pid, reason} ->\n         IO.puts(\n           \"Process #{inspect(pid)} died with reason #{inspect(reason)} ... Stopping as well\"\n         )\n \n       any ->\n-        IO.puts(\"#{self() |> inspect()} Received unknown message: #{inspect(any)}, ignoring\")\n+        IO.puts(\"#{me |> inspect()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n \n"
+                },
+                {
+                    "date": 1726256998523,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -46,9 +46,9 @@\n           \"Process #{inspect(pid)} died with reason #{inspect(reason)} ... Stopping as well\"\n         )\n \n       any ->\n-        IO.puts(\"#{me |> inspect()} Received unknown message: #{inspect(any)}, ignoring\")\n+        IO.puts(\"#{inspect()} Received unknown message: #{inspect(any)}, ignoring\")\n         loop()\n     end\n   end\n \n"
+                }
+            ],
+            "date": 1726253079882,
+            "name": "Commit-0",
+            "content": "defm\n"
+        }
+    ]
+}
