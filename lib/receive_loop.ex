@@ -19,7 +19,7 @@ defmodule Examples.ReceiveLoop do
 
     receive do
       {:hello, sender} ->
-        IO.puts("Hello from #{inspect(sender)}")
+        IO.puts("#{inspect(me)}: Hello from #{inspect(sender)}")
         new_monitored_pids = maybe_monitor(sender, monitored_pids)
 
         if Process.alive?(sender) do
@@ -29,7 +29,7 @@ defmodule Examples.ReceiveLoop do
         loop(new_monitored_pids)
 
       {:world, sender} ->
-        IO.puts("World from #{inspect(sender)}")
+        IO.puts("#{inspect(me)}: World from #{inspect(sender)}")
         new_monitored_pids = maybe_monitor(sender, monitored_pids)
 
         if Process.alive?(sender) do
@@ -47,7 +47,7 @@ defmodule Examples.ReceiveLoop do
         )
 
       any ->
-        IO.puts("#{inspect(me)} Received unknown message: #{inspect(any)}, ignoring")
+        IO.puts("#{inspect(me)}: Ignoring unknown message #{inspect(any)}")
         loop()
     end
   end
