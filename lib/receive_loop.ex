@@ -11,6 +11,11 @@ defmodule Examples.ReceiveLoop do
 
   send(pid1, {:hello, pid2})
 
+  pid1 |> Process.monitor
+  pid1 |> send(:foo)
+
+  pid2 |> send(:stop)
+  flush()
   """
 
   def loop(monitored_pids \\ MapSet.new()) do
